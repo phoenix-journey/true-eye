@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Create temporary folder
           command: |
-            [ -d "tmp" ] && echo "Directory tmp exists." || echo "Error: Directory /path/to/dir does not exists." && mkdir tmp
+            [ -d "tmp" ] && echo "Directory tmp exists." || mkdir tmp
       # https://circleci.com/docs/2.0/google-auth/
       - run:
           name: Google auth
