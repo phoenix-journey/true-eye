@@ -2,44 +2,53 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-orbs:
-  node: circleci/node@4.7.0
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+
 jobs:
-  build:
-    executor:
-      name: node/default
-      tag: '10.4'
+  say-hello:
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+    machine:
+      image: ubuntu-2004:202111-02
+    # Add steps to the job
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-      - run: npm run test
-#jobs:
-  #say-hello:
-    ## Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    ## See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    #docker:
-      #- image: cimg/base:stable
-    ## Add steps to the job
-    ## See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    #steps:
-      #- checkout
-      #- run:
-          #name: "Say hello"
-          #command: "echo Hello, World!"
-      #- store_artifacts:
-          #path: /tmp/artifact-1
-          #destination: artifact-file
-
-      #- store_artifacts:
-          #path: /tmp/artifacts
-
-## Invoke jobs via workflows
-## See: https://circleci.com/docs/2.0/configuration-reference/#workflows
-#workflows:
-  #say-hello-workflow:
-    #jobs:
-   #   - say-hello
+      - run:
+          name: "Say hello"
+          command: "echo Hello, World!"
+      - run:
+          name: "Run docker container ✔️"
+          command: |
+            result=$(docker run --rm -p 8080:8080 rancher/curl google.com)
+            mkdir tmp
+            echo $result >> tmp/google.html
+      # save latest version to github     
+      - run: 
+          name: Git user name and email
+          command: |-
+            git config --global user.name "Szymon" && \
+            git config --global user.email "github-bot@phoenixjourney.com"      
+      - run: 
+          name: Git add
+          command: |-
+            git add -A
+      - run: 
+          name: Git commit
+          command: |-
+            git commit -m "Commit app intent/outcome from Phoenix Journey [skip ci]"
+      - run: 
+          name: Git pull
+          command: |-
+            git pull --rebase 
+      - run: 
+          name: Git push
+          command: |-
+            git push origin circleci-project-setup
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  say-hello-workflow:
+    jobs:
+      - say-hello
