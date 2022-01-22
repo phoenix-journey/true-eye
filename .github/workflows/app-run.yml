@@ -31,7 +31,7 @@ jobs:
         run: |-
           mkdir -p request/${{ github.event.inputs.app_name }} 2>/dev/null \
           cd request/${{ github.event.inputs.app_name }} \
-          "${{ github.event.inputs.player }} run ${{ github.event.inputs.app_name }} with arguments ${{ github.event.inputs.arguments }}" >> intent
+          echo "${{ github.event.inputs.player }} run ${{ github.event.inputs.app_name }} with arguments ${{ github.event.inputs.arguments }}" >> intent
 
       #Alternative option - authentication via credentials json
       - id: 'auth'
@@ -83,7 +83,7 @@ jobs:
         run: |-
           mkdir -p result/${{ github.event.inputs.app_name }} 2>/dev/null \
           cd result/${{ github.event.inputs.app_name }} \
-          "${{ github.event.inputs.player }} run ${{ github.event.inputs.app_name }} with arguments ${{ github.event.inputs.arguments }} and did $RESULT" >> outcome
+          echo "${{ github.event.inputs.player }} run ${{ github.event.inputs.app_name }} with arguments ${{ github.event.inputs.arguments }} and did $RESULT" >> outcome
           
     # save latest version to github
       - name: Commit result        
