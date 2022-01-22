@@ -23,7 +23,9 @@ jobs:
       - run:
           name: Google auth
           command: |
-            echo $GCLOUD_SERVICE_KEY | docker run --rm google/cloud-sdk gcloud auth configure-docker us-east1-docker.pkg.dev --key-file=-
+            echo $GCLOUD_SERVICE_KEY > key.json
+            cat key.json | docker login -u _json_key_base64 --password-stdin \
+            https://us-east1-docker.pkg.dev
       - run:
           name: "Run docker container ✔️"
           command: |
