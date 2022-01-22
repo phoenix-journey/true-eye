@@ -78,7 +78,7 @@ jobs:
 
   save-result:
     name: Save result 🎥
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: request-run
 
     # Add "id-token" with the intended permissions.
