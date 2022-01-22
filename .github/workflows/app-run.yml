@@ -54,13 +54,21 @@ jobs:
       - id: step3
         run: echo "::set-output name=result::$RESULT"
     # save latest version to github     
-      - name: Commit result
+      - name: Git user name and email
         run: |-
           git config --global user.name "${{ github.event.inputs.player }}" && \
-          git config --global user.email "github-bot@phoenixjourney.com" && \     
-          git pull --rebase && \ 
-          git add -A && \
-          git commit -m "Commit app intent from Phoenix Journey [skip ci]" && \
+          git config --global user.email "github-bot@phoenixjourney.com"      
+      - name: Git pull
+        run: |-
+          git pull --rebase 
+      - name: Git add
+        run: |-
+          git add -A
+      - name: Git commit
+        run: |-
+          git commit -m "Commit app intent from Phoenix Journey [skip ci]"
+      - name: Git push
+        run: |-
           git push origin main 
 
   save-result:
@@ -87,11 +95,19 @@ jobs:
           echo "${{ github.event.inputs.player }} run ${{ github.event.inputs.app_name }} with arguments ${{ github.event.inputs.arguments }} and did $RESULT" >> outcome
           
     # save latest version to github
-      - name: Commit result        
+      - name: Set git user name        
         run: |-
           git config --global user.name "${{ github.event.inputs.player }}" && \
-          git config --global user.email "github-bot@phoenixjourney.com" && \
-          git pull --rebase && \  
-          git add -A && \
-          git commit -m "Commit app result from Phoenix Journey [skip ci]" && \
+          git config --global user.email "github-bot@phoenixjourney.com" 
+      - name: Git pull
+        run: |-
+          git pull --rebase
+      - name: Git add
+        run: |-
+          git add -A
+      - name: Git commit
+        run: |-
+          git commit -m "Commit app result from Phoenix Journey [skip ci]"
+      - name: Git push
+        run: |-
           git push origin main 
