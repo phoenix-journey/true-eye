@@ -30,7 +30,7 @@ jobs:
           name: "Run docker container ✔️"
           command: |
             result=$(docker run --rm -p 8080:8080 us-east1-docker.pkg.dev/marketplaceinspace/test/phoenix-journey/hi_nutek:f23c81f2923294e7289e9c517544137dc01155d8)
-            mkdir tmp 2>/dev/null
+            mkdir tmp /dev/null 2>&1;
             echo $result >> tmp/nutek
       # save latest version to github     
       - run: 
