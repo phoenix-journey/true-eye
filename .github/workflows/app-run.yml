@@ -43,7 +43,7 @@ jobs:
 
       - name: Authorize Docker
         run: |-
-          gcloud auth configure-docker
+          gcloud auth configure-docker us-east1-docker.pkg.dev/marketplaceinspace/test/
       
       - name: Run app 😷  
         run: |-
