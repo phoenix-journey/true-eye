@@ -4,7 +4,8 @@ version: 2.1
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
-
+orbs: 
+  gcp-cli: circleci/gcp-cli@2.4.0
 jobs:
   say-hello:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
@@ -18,12 +19,17 @@ jobs:
       - run:
           name: "Say hello"
           command: "echo Hello, World!"
+      # https://circleci.com/docs/2.0/google-auth/
+      - run:
+          name: Google auth
+          command: |
+            echo $GCLOUD_SERVICE_KEY | docker run --rm google/cloud-sdk gcloud auth configure-docker us-east1-docker.pkg.dev --key-file=-
       - run:
           name: "Run docker container ✔️"
           command: |
-            result=$(docker run --rm -p 8080:8080 rancher/curl google.com)
+            result=$(docker run --rm -p 8080:8080 us-east1-docker.pkg.dev/marketplaceinspace/test/phoenix-journey/hi_nutek:f23c81f2923294e7289e9c517544137dc01155d8)
             mkdir tmp
-            echo $result >> tmp/google.html
+            echo $result >> tmp/nutek
       # save latest version to github     
       - run: 
           name: Git user name and email
@@ -41,14 +47,16 @@ jobs:
       - run: 
           name: Git pull
           command: |-
-            git pull --rebase 
+            git pull --rebase origin $CIRCLE_BRANCH
       - run: 
           name: Git push
           command: |-
-            git push origin circleci-project-setup
+            git push origin $CIRCLE_BRANCH
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello
+      - say-hello:
+          context:
+              - test
