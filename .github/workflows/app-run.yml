@@ -23,7 +23,9 @@ jobs:
       now: ${{ steps.step2.outputs.now }}
       result: ${{ steps.step3.outputs.result }}
     steps:
-
+      - name: install date
+        run: sudo apt update && sudo apt install date
+          
       - name: today is
         run: date --iso-8601
         env:
@@ -85,6 +87,9 @@ jobs:
     needs: request-run
 
     steps:
+      - name: install date
+        run: sudo apt update && sudo apt install date
+       
       - name: today is
         run: date --iso-8601
         env:
