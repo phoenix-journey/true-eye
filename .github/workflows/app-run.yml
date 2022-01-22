@@ -1,0 +1,88 @@
+name: Run on web trigger 🕷
+
+on: 
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: 'Name of the app to run 🛤'     
+        required: true
+        default: 'hi_nutek'
+
+jobs:
+  request-run:
+    name: Run container 🍟
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
+      output2: ${{ steps.step2.outputs.test }}
+      output3: ${{ steps.step3.outputs.test }}
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: '${{ secrets.GITHUB }}'
+      
+      - name: Run
+        run: |-
+          today_is=$(date --iso-8601) \
+          mkdir -p request/$today_is 2>/dev/null \
+          cd request/$today_is \
+          now=$(date --rfc-3339=ns) \
+          touch $now
+
+    #  Alternative option - authentication via credentials json
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+        run: |-
+          result=$(docker run -rm -p 8080:8080 ${{ github.event.inputs.app_name }) \
+          ::set-output name=test::$result
+      - id: step1
+        run: echo "::set-output name=test::$today_is"
+      - id: step2
+        run: echo "::set-output name=test::$now"
+      - id: step3
+        run: echo "::set-output name=test::$result"
+    # save latest version to github
+      - name: Commit new version
+        uses: "EndBug/add-and-commit@v8"
+        with:
+          add: "request/$today_is/$now"
+          author_name: "Phoenix Journey bot"
+          message: "Commit app request from Phoenix Journey [skip ci]"
+          author_email: "github-bot@phoenixjourney.com"
+
+  save-result:
+    name: Save result 🎥
+    runs-on: self-hosted
+    needs: request-run
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: '${{ secrets.GITHUB }}'
+
+      - name: Add new app run
+        run: |-
+          mkdir -p result/$today_is 2>/dev/null \
+          cd result/$today_is \
+          touch ${{ needs.request-run.outputs.output2 }} \
+          ${{ needs.request-run.outputs.output3 }} >> \
+          ${{ needs.request-run.outputs.output2 }}
+
+    # save latest version to github
+      - name: Commit result        
+        uses: "EndBug/add-and-commit@v8"
+        with:
+          add: "result/${{ needs.request-run.outputs.output1 }}/${{ needs.request-run.outputs.output2 }}"
+          author_name: "Phoenix Journey bot"
+          message: "Commit app result from Phoenix Journey [skip ci]"
+          author_email: "github-bot@phoenixjourney.com"
