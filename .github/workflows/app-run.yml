@@ -40,6 +40,8 @@ jobs:
     # Setup gcloud CLI
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
+        run: |-
+          gcloud auth configure-docker
       
       - name: Run app 😷  
         run: |-
