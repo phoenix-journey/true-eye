@@ -8,6 +8,9 @@ on:
         required: true
         default: 'hi_nutek'
 
+env:
+  PROJECT_ID: ${{ secrets.RUN_PROJECT }}
+
 jobs:
   request-run:
     name: Run container 🍟
@@ -31,11 +34,11 @@ jobs:
           now=$(date --rfc-3339=ns) \
           touch $now
 
-    #  Alternative option - authentication via credentials json
-      #- id: 'auth'
-        #uses: 'google-github-actions/auth@v0'
-        #with:
-          #credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      #Alternative option - authentication via credentials json
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
     # Setup gcloud CLI
       #- name: Set up Cloud SDK
@@ -43,7 +46,7 @@ jobs:
 
       - name: Authorize Docker
         run: |-
-          cat ${{ secrets.GCP_CREDENTIALS }} | \
+          cat '${{ secrets.GCP_CREDENTIALS }}' | \
             docker login -u _json_key --password-stdin https://us-east1-docker.pkg.dev 
 
       - name: Run app 😷  
