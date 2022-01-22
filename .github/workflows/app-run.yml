@@ -60,8 +60,7 @@ jobs:
         
       - name: Run app 😷  
         run: |-
-          result=$(docker run --rm -p 8080:8080 ${{ github.event.inputs.app_name }}) \
-          ${{ github.event.inputs.arguments }}
+          result=$(docker run --rm -p 8080:8080 ${{ github.event.inputs.app_name }} ${{ github.event.inputs.arguments }})
         env:
           RESULT: $(result)
 
