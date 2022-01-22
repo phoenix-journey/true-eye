@@ -20,7 +20,17 @@ jobs:
       output2: ${{ steps.step2.outputs.test }}
       output3: ${{ steps.step3.outputs.test }}
     steps:
+
+      - name: today is
+        run: date --iso-8601
+        env:
+          TODAY_IS: $
       
+      - name: now
+        run: date --rfc-3339=ns
+        env:
+          NOW: $
+
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -28,10 +38,10 @@ jobs:
       
       - name: Run
         run: |-
-          today_is=$(date --iso-8601) \
+          today_is=$TODAY_IS \
           mkdir -p request/$today_is 2>/dev/null \
           cd request/$today_is \
-          now=$(date --rfc-3339=ns) \
+          now=$NOW \
           touch $now
 
       #Alternative option - authentication via credentials json
@@ -40,33 +50,24 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
-    # Setup gcloud CLI
-      #- name: Set up Cloud SDK
-        #uses: google-github-actions/setup-gcloud@v0
-
       - name: Authorize Docker
         run: |-
           echo '${{ secrets.GCP_CREDENTIALS }}' >> pass.json && \
           cat pass.json | \
             docker login -u _json_key --password-stdin https://us-east1-docker.pkg.dev 
-         # VERSION=2.0.0
-          #OS=linux \ # or "darwin" for OSX, "windows" for Windows.
-          #ARCH=amd64 \ # or "386" for 32-bit OSs, "arm64" for ARM 64.
-          #curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${VERSION}/docker-credential-gcr_${OS}_${ARCH}-${VERSION}.tar.gz" \
-            #| tar xz --to-stdout ./docker-credential-gcr \
-            #> /usr/local/bin/docker-credential-gcr && chmod +x /usr/local/bin/docker-credential-gcr
-         # docker-credential-gcr configure-docker --token-source ${{ secrets.GCP_CREDENTIALS }}
+        env:
+          RESULT: $
 
       - name: Run app 😷  
         run: |-
           result=$(docker run --rm -p 8080:8080 ${{ github.event.inputs.app_name }})
 
       - id: step1
-        run: echo "::set-output name=test::$today_is"
+        run: echo "::set-output name=test::$TODAY_IS"
       - id: step2
-        run: echo "::set-output name=test::$now"
+        run: echo "::set-output name=test::$NOW"
       - id: step3
-        run: echo "::set-output name=test::$result"
+        run: echo "::set-output name=test::$RESULT"
     # save latest version to github
       - name: Commit new version
         uses: "EndBug/add-and-commit@v8"
