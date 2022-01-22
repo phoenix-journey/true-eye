@@ -13,6 +13,8 @@ on:
       player:
         description: "Player name"
         required: true
+env:
+  PROJECT_ID: "marketplaceinspace"
 
 jobs:
   request-run:
