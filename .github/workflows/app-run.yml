@@ -61,7 +61,7 @@ jobs:
           git config --global user.email "github-bot@phoenixjourney.com" && \     
           git add request/${{ github.event.inputs.app_name }}/intent && \
           git commit -m "Commit app intent from Phoenix Journey [skip ci]" && \
-          git push origin main && \
+          git push origin main 
 
   save-result:
     name: Save result 🎥
@@ -94,4 +94,4 @@ jobs:
           git config --global user.email "github-bot@phoenixjourney.com" && \
           git add result/${{ github.event.inputs.app_name }}/outcome && \
           git commit -m "Commit app result from Phoenix Journey [skip ci]" && \
-          git push origin main && \
+          git push origin main 
