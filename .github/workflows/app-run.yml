@@ -94,6 +94,7 @@ jobs:
 
       - name: Add new app run
         run: |-
+          today_is=$(date --iso-8601) \
           mkdir -p result/$today_is 2>/dev/null \
           cd result/$today_is \
           touch ${{ needs.request-run.outputs.output2 }} \
