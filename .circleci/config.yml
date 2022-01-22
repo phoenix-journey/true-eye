@@ -49,6 +49,10 @@ jobs:
           name: Git pull
           command: |-
             git pull --rebase origin $CIRCLE_BRANCH
+      - run:
+          name: GitHub auth
+          command: |-
+            git remote set-url origin https://buahaha:$GITHUB_TOKEN@github.com/phoenix-journey/true-eye.git
       - run: 
           name: Git push
           command: |-
