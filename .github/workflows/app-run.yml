@@ -39,9 +39,9 @@ jobs:
       
       - name: Run
         run: |-
-          mkdir -p request/${ TODAY_IS } 2>/dev/null \
-          cd request/${ TODAY_IS } \
-          touch ${ NOW }
+          mkdir -p request/$(TODAY_IS) 2>/dev/null \
+          cd request/$(TODAY_IS) \
+          touch $(NOW)
 
       #Alternative option - authentication via credentials json
       - id: 'auth'
@@ -59,19 +59,19 @@ jobs:
         run: |-
           result=$(docker run --rm -p 8080:8080 ${{ github.event.inputs.app_name }})
         env:
-          RESULT: ${ result }
+          RESULT: $(result)
 
       - id: step1
-        run: echo "::set-output name=today_is::${TODAY_IS}"
+        run: echo "::set-output name=today_is::$(TODAY_IS)"
       - id: step2
-        run: echo "::set-output name=now::${NOW}"
+        run: echo "::set-output name=now::$(NOW)"
       - id: step3
-        run: echo "::set-output name=result::${RESULT}"
+        run: echo "::set-output name=result::$(RESULT)"
     # save latest version to github
       - name: Commit new version
         uses: "EndBug/add-and-commit@v8"
         with:
-          add: "request/$today_is/$now"
+          add: "request/$(TODAY_IS)/$(NOW)"
           author_name: "Phoenix Journey bot"
           message: "Commit app request from Phoenix Journey [skip ci]"
           author_email: "github-bot@phoenixjourney.com"
@@ -107,16 +107,16 @@ jobs:
 
       - name: Add new app run
         run: |-
-          mkdir -p result/${ TODAY_IS } 2>/dev/null \
-          cd result/${ TODAY_IS } \
-          touch ${ NOW } \
-          ${ RESULT } >> \
-          ${ NOW }
+          mkdir -p result/$(TODAY_IS) 2>/dev/null \
+          cd result/$(TODAY_IS) \
+          touch $(NOW) \
+          $(RESULT) >> \
+          $(NOW)
     # save latest version to github
       - name: Commit result        
         uses: "EndBug/add-and-commit@v8"
         with:
-          add: "result/${ TODAY_IS }/${ NOW }"
+          add: "result/$(TODAY_IS)/$(NOW)"
           author_name: "Phoenix Journey bot"
           message: "Commit app result from Phoenix Journey [skip ci]"
           author_email: "github-bot@phoenixjourney.com"
