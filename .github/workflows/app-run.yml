@@ -51,8 +51,12 @@ jobs:
         env:
           RESULT: echo $result
 
-      - id: step3
-        run: echo "::set-output name=result::$RESULT"
+      - name: Add new app run
+        run: |-
+          mkdir -p result/${{ github.event.inputs.app_name }} 2>/dev/null && \
+          cd result/${{ github.event.inputs.app_name }} && \
+          echo "${{ github.event.inputs.player }} run ${{ github.event.inputs.app_name }} with arguments ${{ github.event.inputs.arguments }} and did $RESULT" >> outcome
+      
     # save latest version to github     
       - name: Git user name and email
         run: |-
@@ -67,47 +71,6 @@ jobs:
       - name: Git pull
         run: |-
           git pull --rebase 
-      - name: Git push
-        run: |-
-          git push origin main 
-
-  save-result:
-    name: Save result 🎥
-    runs-on: ubuntu-latest
-    needs: request-run
-
-    steps:
-      - name: result
-        run: echo ${{ needs.request-run.outputs.result }}
-        env:
-          RESULT: echo ${{ needs.request-run.outputs.result }}
-
-      
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          token: '${{ secrets.GITHUB }}'
-
-      - name: Add new app run
-        run: |-
-          mkdir -p result/${{ github.event.inputs.app_name }} 2>/dev/null && \
-          cd result/${{ github.event.inputs.app_name }} && \
-          echo "${{ github.event.inputs.player }} run ${{ github.event.inputs.app_name }} with arguments ${{ github.event.inputs.arguments }} and did $RESULT" >> outcome
-          
-    # save latest version to github
-      - name: Set git user name        
-        run: |-
-          git config --global user.name "${{ github.event.inputs.player }}" && \
-          git config --global user.email "github-bot@phoenixjourney.com" 
-      - name: Git add
-        run: |-
-          git add -A
-      - name: Git commit
-        run: |-
-          git commit -m "Commit app result from Phoenix Journey [skip ci]"
-      - name: Git pull
-        run: |-
-          git pull --rebase
       - name: Git push
         run: |-
           git push origin main 
