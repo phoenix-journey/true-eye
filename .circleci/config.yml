@@ -20,6 +20,10 @@ jobs:
     steps:
       
       - checkout
+      - run:
+          name: Create temporary folder
+          command: |
+            [ ! -d "tmp" ] && mkdir tmp #"Directory /path/to/dir DOES NOT exists."
       # https://circleci.com/docs/2.0/google-auth/
       - run:
           name: Google auth
@@ -30,7 +34,6 @@ jobs:
           name: "Run docker container ✔️"
           command: |
             result=$(docker run --rm -p 8080:8080 us-east1-docker.pkg.dev/marketplaceinspace/test/phoenix-journey/hi_nutek:f23c81f2923294e7289e9c517544137dc01155d8)
-            mkdir tmp /dev/null 2>&1;
             echo $result >> tmp/nutek
       # save latest version to github     
       - run: 
