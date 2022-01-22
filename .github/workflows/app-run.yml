@@ -59,7 +59,7 @@ jobs:
           git config --global user.name "${{ github.event.inputs.player }}" && \
           git config --global user.email "github-bot@phoenixjourney.com" && \     
           git pull --rebase && \ 
-          git add request/${{ github.event.inputs.app_name }}/intent && \
+          git add -A && \
           git commit -m "Commit app intent from Phoenix Journey [skip ci]" && \
           git push origin main 
 
@@ -92,6 +92,6 @@ jobs:
           git config --global user.name "${{ github.event.inputs.player }}" && \
           git config --global user.email "github-bot@phoenixjourney.com" && \
           git pull --rebase && \  
-          git add result/${{ github.event.inputs.app_name }}/outcome && \
+          git add -A && \
           git commit -m "Commit app result from Phoenix Journey [skip ci]" && \
           git push origin main 
