@@ -13,8 +13,6 @@ on:
       player:
         description: "Player name"
         required: true
-env:
-  PROJECT_ID: "marketplaceinspace"
 
 jobs:
   request-run:
@@ -45,7 +43,7 @@ jobs:
         run: |-
           echo '${{ secrets.GCP_CREDENTIALS }}' >> pass.json && \
           cat pass.json | \
-            docker login -u _json_key --password-stdin https://us-east1-docker.pkg.dev 
+            docker login -u _json_key_base64 --password-stdin https://us-east1-docker.pkg.dev
         
       - name: Run app 😷  
         run: |-
