@@ -41,7 +41,7 @@ jobs:
 
       - name: Authorize Docker
         run: |-
-          echo '${{ secrets.GCP_CREDENTIALS }}' >> pass.json && \
+          echo '${{ 0 }}' >> pass.json && \
           cat pass.json | docker login -u _json_key_base64 --password-stdin \
             https://us-east1-docker.pkg.dev
       - name: Run app 😷  
