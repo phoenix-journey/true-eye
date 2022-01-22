@@ -14,9 +14,6 @@ on:
         description: "Player name"
         required: true
 
-env:
-  PROJECT_ID: ${{ secrets.RUN_PROJECT }}
-
 jobs:
   request-run:
     name: Run container 🍟
