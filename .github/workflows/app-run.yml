@@ -39,8 +39,7 @@ jobs:
       
       - name: Run app 😷  
         run: |-
-          result=$(docker run -rm -p 8080:8080 ${{ github.event.inputs.app_name }) \
-            ::set-output name=test::$result
+          result=$(docker run -rm -p 8080:8080 ${{ github.event.inputs.app_name }})
 
       - id: step1
         run: echo "::set-output name=test::$today_is"
