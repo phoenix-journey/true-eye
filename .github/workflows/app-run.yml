@@ -36,9 +36,12 @@ jobs:
         uses: 'google-github-actions/auth@v0'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      
+      - name: Run app 😷  
         run: |-
           result=$(docker run -rm -p 8080:8080 ${{ github.event.inputs.app_name }) \
-          ::set-output name=test::$result
+            ::set-output name=test::$result
+
       - id: step1
         run: echo "::set-output name=test::$today_is"
       - id: step2
