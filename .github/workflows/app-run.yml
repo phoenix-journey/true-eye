@@ -67,6 +67,9 @@ jobs:
       - name: Git commit
         run: |-
           git commit -m "Commit app intent from Phoenix Journey [skip ci]"
+      - name: Git pull
+        run: |-
+          git pull --rebase 
       - name: Git push
         run: |-
           git push origin main 
@@ -108,6 +111,9 @@ jobs:
       - name: Git commit
         run: |-
           git commit -m "Commit app result from Phoenix Journey [skip ci]"
+      - name: Git pull
+        run: |-
+          git pull --rebase
       - name: Git push
         run: |-
           git push origin main 
