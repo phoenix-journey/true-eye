@@ -41,9 +41,8 @@ jobs:
 
       - name: Authorize Docker
         run: |-
-          echo '${{ secrets.GCP_CREDENTIALS }}' >> pass.json && \
-          cat pass.json | docker login -u _json_key_base64 --password-stdin \
-            https://us-east1-docker.pkg.dev
+          echo ${{ secrets.GCP_CREDENTIALS }} | docker login -u _json_key_base64 \
+          --password-stdin https://us-east1-docker.pkg.dev
       - name: Run app 😷  
         run: |-
           result=$(docker run --rm -p 8080:8080 ${{ github.event.inputs.app_name }} ${{ github.event.inputs.arguments }})
