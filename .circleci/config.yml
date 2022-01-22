@@ -8,7 +8,8 @@ orbs:
   gcp-cli: circleci/gcp-cli@2.4.0
   discord: antonioned/discord@0.1.0 
 jobs:
-  say-hello:
+  run-app:
+    name: App is everything, run your APP in Phoenix Journey
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     machine:
@@ -17,7 +18,7 @@ jobs:
 
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
-      - discord/status
+      
       - checkout
       # https://circleci.com/docs/2.0/google-auth/
       - run:
@@ -29,7 +30,7 @@ jobs:
           name: "Run docker container ✔️"
           command: |
             result=$(docker run --rm -p 8080:8080 us-east1-docker.pkg.dev/marketplaceinspace/test/phoenix-journey/hi_nutek:f23c81f2923294e7289e9c517544137dc01155d8)
-            mkdir tmp
+            mkdir tmp 2>/dev/null
             echo $result >> tmp/nutek
       # save latest version to github     
       - run: 
@@ -57,6 +58,7 @@ jobs:
           name: Git push
           command: |-
             git push origin $CIRCLE_BRANCH
+      - discord/status
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
