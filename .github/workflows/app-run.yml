@@ -53,14 +53,15 @@ jobs:
 
       - id: step3
         run: echo "::set-output name=result::$RESULT"
-    # save latest version to github
-      - name: Commit new version
-        uses: "EndBug/add-and-commit@v8"
-        with:
-          add: "request/${{ github.event.inputs.app_name }}/intent"
-          author_name: "Phoenix Journey bot"
-          message: "Commit app request from Phoenix Journey [skip ci]"
-          author_email: "github-bot@phoenixjourney.com"
+    # save latest version to github     
+      - name: Commit result
+        run: |-
+          git pull --rebase && \
+          git config --global user.name "${{ github.event.insputs.player }}" && \
+          git config --global user.email "github-bot@phoenixjourney.com" && \     
+          git add request/${{ github.event.inputs.app_name }}/intent && \
+          git commit -m "Commit app intent from Phoenix Journey [skip ci]" && \
+          git push origin main && \
 
   save-result:
     name: Save result 🎥
@@ -87,9 +88,10 @@ jobs:
           
     # save latest version to github
       - name: Commit result        
-        uses: "EndBug/add-and-commit@v8"
-        with:
-          add: "result/${{ github.event.inputs.app_name }}/outcome"
-          author_name: "Phoenix Journey bot"
-          message: "Commit app result from Phoenix Journey [skip ci]"
-          author_email: "github-bot@phoenixjourney.com"
+        run: |-
+          git pull --rebase && \
+          git config --global user.name "${{ github.event.insputs.player }}" && \
+          git config --global user.email "github-bot@phoenixjourney.com" && \
+          git add result/${{ github.event.inputs.app_name }}/outcome && \
+          git commit -m "Commit app result from Phoenix Journey [skip ci]" && \
+          git push origin main && \
