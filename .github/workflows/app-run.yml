@@ -10,6 +10,9 @@ on:
       arguments:
         description: "App arguments"
         required: false
+      player:
+        description: "Player name"
+        required: true
 
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
@@ -19,24 +22,9 @@ jobs:
     name: Run container 🍟
     runs-on: ubuntu-latest
     outputs:
-      today_is: ${{ steps.step1.outputs.today_is }}
-      now: ${{ steps.step2.outputs.now }}
       result: ${{ steps.step3.outputs.result }}
     steps:
-      - name: install date
-        run: sudo apt update && sudo apt install -y date
-          
-      - name: today is
-        run: date --iso-8601
-        env:
-          TODAY_IS: echo $(date --iso-8601)
       
-      - name: now
-        run: date --rfc-3339=ns
-        env:
-          NOW: echo $(date --rfc-3339=ns)
-
-
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -44,9 +32,9 @@ jobs:
       
       - name: Run
         run: |-
-          mkdir -p request/$TODAY_IS 2>/dev/null \
-          cd request/$TODAY_IS \
-          touch $NOW
+          mkdir -p request/${{ github.event.inputs.app_name }} 2>/dev/null \
+          cd request/${{ github.event.inputs.app_name }} \
+          "${{ github.event.inputs.player }} run ${{ github.event.inputs.app_name }} with arguments ${{ github.event.inputs.arguments }}" >> intent
 
       #Alternative option - authentication via credentials json
       - id: 'auth'
@@ -66,17 +54,13 @@ jobs:
         env:
           RESULT: echo $result
 
-      - id: step1
-        run: echo "::set-output name=today_is::$TODAY_IS"
-      - id: step2
-        run: echo "::set-output name=now::$NOW"
       - id: step3
         run: echo "::set-output name=result::$RESULT"
     # save latest version to github
       - name: Commit new version
         uses: "EndBug/add-and-commit@v8"
         with:
-          add: "request/$TODAY_IS/$NOW"
+          add: "request/${{ github.event.inputs.app_name }}/intent"
           author_name: "Phoenix Journey bot"
           message: "Commit app request from Phoenix Journey [skip ci]"
           author_email: "github-bot@phoenixjourney.com"
@@ -87,21 +71,6 @@ jobs:
     needs: request-run
 
     steps:
-      - name: install date
-        run: sudo apt update && sudo apt install -y date
-       
-      - name: today is
-        run: date --iso-8601
-        env:
-          TODAY_IS: echo $(date --iso-8601)
-
-      
-      - name: now
-        run: echo ${{ needs.request-run.outputs.now }}
-        env:
-          NOW: echo ${{ needs.request-run.outputs.now }}
-
-      
       - name: result
         run: echo ${{ needs.request-run.outputs.result }}
         env:
@@ -115,16 +84,15 @@ jobs:
 
       - name: Add new app run
         run: |-
-          mkdir -p result/$TODAY_IS 2>/dev/null \
-          cd result/$TODAY_IS \
-          touch $NOW \
-          $RESULT >> \
-          $NOW
+          mkdir -p result/${{ github.event.inputs.app_name }} 2>/dev/null \
+          cd result/${{ github.event.inputs.app_name }} \
+          "${{ github.event.inputs.player }} run ${{ github.event.inputs.app_name }} with arguments ${{ github.event.inputs.arguments }} and did $RESULT" >> outcome
+          
     # save latest version to github
       - name: Commit result        
         uses: "EndBug/add-and-commit@v8"
         with:
-          add: "result/$TODAY_IS/$NOW"
+          add: "result/${{ github.event.inputs.app_name }}/outcome"
           author_name: "Phoenix Journey bot"
           message: "Commit app result from Phoenix Journey [skip ci]"
           author_email: "github-bot@phoenixjourney.com"
